@@ -6,9 +6,10 @@ export type Tincture =
   | "sable"
   | "sinople"
   | "pourpre"
-  | "hermine";
+  | "hermine"
+  | "vair";
 
-export const TINCTURE_COLORS: Record<Exclude<Tincture, "hermine">, string> = {
+export const TINCTURE_COLORS: Record<Exclude<Tincture, "hermine" | "vair">, string> = {
   or: "#e9b824",
   argent: "#f6f4ee",
   azur: "#2457b3",
@@ -27,6 +28,7 @@ export const TINCTURE_LABELS: Record<Tincture, string> = {
   sinople: "Sinople",
   pourpre: "Pourpre",
   hermine: "Hermine",
+  vair: "Vair",
 };
 
 export type FieldSpec =
@@ -58,9 +60,7 @@ export type OrdinaryType =
 export interface Ordinary {
   k: OrdinaryType;
   t: Tincture;
-  /** épaisseur (unités du blason, 100 de large) */
   w?: number;
-  /** dessiné par-dessus les meubles */
   over?: boolean;
 }
 
@@ -84,7 +84,16 @@ export type ChargeType =
   | "heart"
   | "crosslet"
   | "crosspotent"
-  | "croixtoulouse";
+  | "croixtoulouse"
+  // nouveaux meubles
+  | "rose"
+  | "key"
+  | "sword"
+  | "bear"
+  | "harp"
+  | "escallop"
+  | "tree"
+  | "tower";
 
 export type LayoutName =
   | "1"
@@ -100,15 +109,10 @@ export interface Charge {
   type: ChargeType;
   t: Tincture;
   at: LayoutName | "semy" | [number, number][];
-  /** taille (unités du blason) */
   s?: number;
-  /** animal couronné */
   crowned?: boolean;
-  /** dessiné sous les pièces */
   under?: boolean;
-  /** couleur secondaire (fond d'une croix vidée…) */
   t2?: Tincture;
-  /** espacement des semés (multiplicateur) */
   gap?: number;
 }
 
@@ -116,7 +120,6 @@ export interface ShieldSpec {
   field: FieldSpec;
   ordinaries?: Ordinary[];
   charges?: Charge[];
-  /** écartelé : 4 sous-écus (1, 2, 3, 4) */
   quarters?: [ShieldSpec, ShieldSpec, ShieldSpec, ShieldSpec];
 }
 
@@ -132,7 +135,6 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 export interface ArmEntry {
   id: string;
   name: string;
-  /** complément affiché dans les explications */
   subtitle: string;
   category: Category;
   difficulty: 1 | 2 | 3;

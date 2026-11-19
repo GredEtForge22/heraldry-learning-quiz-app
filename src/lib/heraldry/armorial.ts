@@ -1,0 +1,730 @@
+import type {
+  ArmEntry,
+  Charge,
+  FieldSpec,
+  Ordinary,
+  ShieldSpec,
+  Tincture,
+} from "./types";
+
+const P = (t: Tincture): FieldSpec => ({ k: "plain", t });
+const pat = (
+  p: "barry" | "paly" | "bendy" | "chequy" | "lozengy",
+  a: Tincture,
+  b: Tincture,
+  n?: number,
+): FieldSpec => ({ k: "pattern", p, a, b, n });
+const sh = (field: FieldSpec, ordinaries?: Ordinary[], charges?: Charge[]): ShieldSpec => ({
+  field,
+  ordinaries,
+  charges,
+});
+const ord = (k: Ordinary["k"], t: Tincture, extra: Partial<Ordinary> = {}): Ordinary => ({ k, t, ...extra });
+const lion = (t: Tincture, crowned = false, s = 70): Charge => ({
+  type: "lion",
+  t,
+  at: [[50, 60]],
+  s,
+  crowned,
+});
+const eagle = (t: Tincture, s = 74, type: "eagle" | "eagle2" = "eagle"): Charge => ({
+  type,
+  t,
+  at: [[50, 56]],
+  s,
+});
+
+// Sous-écus utilisés dans les écartelés
+const qLion = (field: Tincture, t: Tincture) =>
+  sh(P(field), undefined, [{ type: "lion", t, at: [[50, 54]], s: 64 }]);
+const qCastle = sh(P("gueules"), undefined, [{ type: "castle", t: "or", at: [[50, 52]], s: 60 }]);
+const qCross = (cross: Tincture, field: Tincture) => sh(P(field), [ord("cross", cross, { w: 22 })]);
+const qPales = sh(pat("paly", "or", "gueules", 9));
+
+const montAlerions: [number, number][] = [
+  [17, 14],
+  [32, 14],
+  [17, 27],
+  [32, 27],
+  [68, 14],
+  [83, 14],
+  [68, 27],
+  [83, 27],
+  [17, 68],
+  [32, 68],
+  [17, 82],
+  [32, 82],
+  [68, 68],
+  [83, 68],
+  [68, 82],
+  [83, 82],
+];
+
+export const ARMORIAL: ArmEntry[] = [
+  // ───────── Royaumes & États
+  {
+    id: "france-ancien",
+    name: "Royaume de France (ancien)",
+    subtitle: "France, jusqu'en 1376",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'azur semé de fleurs de lys d'or.",
+    note: "Les armes de saint Louis et de Philippe Auguste : un champ d'azur parsemé d'innombrables fleurs de lys. Charles V réduira leur nombre à trois en 1376.",
+    shield: sh(P("azur"), undefined, [{ type: "fleurdelis", t: "or", at: "semy", s: 15 }]),
+  },
+  {
+    id: "france-moderne",
+    name: "Royaume de France (moderne)",
+    subtitle: "France, de 1376 à 1792",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'azur à trois fleurs de lys d'or, deux et une.",
+    note: "Charles V passe de « semé » à trois fleurs de lys, parfois interprétées comme un symbole de la Trinité. Ce sont les armes de Louis XIV.",
+    shield: sh(P("azur"), undefined, [{ type: "fleurdelis", t: "or", at: "2-1" }]),
+  },
+  {
+    id: "angleterre",
+    name: "Royaume d'Angleterre",
+    subtitle: "Plantagenêts, depuis Richard Cœur de Lion",
+    category: "etats",
+    difficulty: 1,
+    blazon: "De gueules à trois léopards d'or, armés et lampassés d'azur.",
+    note: "En blason, ces fauves de profil à tête de face sont des « lions léopardés ». Richard Cœur de Lion les porte vers 1198 ; ils figurent encore dans les armes royales britanniques.",
+    shield: sh(P("gueules"), undefined, [{ type: "leopard", t: "or", at: "3pal" }]),
+  },
+  {
+    id: "ecosse",
+    name: "Royaume d'Écosse",
+    subtitle: "Écosse, maison d'Alexandre",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'or au lion de gueules, enfermé dans un double trescheur fleuronné et contre-fleuronné du même.",
+    note: "Le double trescheur (filet doublé) est la marque distinctive des armes écossaises. Sans lui, ce serait les armes de Hollande.",
+    shield: sh(P("or"), [ord("tressure", "gueules")], [lion("gueules", false, 60)]),
+  },
+  {
+    id: "castille",
+    name: "Royaume de Castille",
+    subtitle: "Castille, depuis Alphonse VIII",
+    category: "etats",
+    difficulty: 1,
+    blazon: "De gueules au château d'or, ouvert et ajouré d'azur.",
+    note: "Un exemple d'armes parlantes : « Castille » vient de castellum, le château. Blanche de Castille, mère de saint Louis, les a popularisées en France.",
+    shield: sh(P("gueules"), undefined, [{ type: "castle", t: "or", at: [[50, 54]], s: 68 }]),
+  },
+  {
+    id: "leon",
+    name: "Royaume de León",
+    subtitle: "León, Espagne",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'argent au lion de pourpre, couronné d'or, armé et lampassé de gueules.",
+    note: "Le lion pourpre de León est l'un des rares meubles de pourpre en héraldique médiévale. Il est devenu rouge dans de nombreuses représentations tardives.",
+    shield: sh(P("argent"), undefined, [lion("pourpre", true)]),
+  },
+  {
+    id: "castille-leon",
+    name: "Castille et León",
+    subtitle: "Union des couronnes, 1230",
+    category: "etats",
+    difficulty: 2,
+    blazon: "Écartelé : aux 1 et 4 de gueules au château d'or ; aux 2 et 3 d'argent au lion de pourpre.",
+    note: "Ferdinand III réunit Castille et León en 1230 et écartèle leurs armes : le premier exemple célèbre d'armes de réunion de deux royaumes.",
+    shield: {
+      field: P("or"),
+      quarters: [qCastle, qLion("argent", "pourpre"), qLion("argent", "pourpre"), qCastle],
+    },
+  },
+  {
+    id: "aragon",
+    name: "Couronne d'Aragon",
+    subtitle: "Aragon et comté de Barcelone",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'or à quatre pals de gueules.",
+    note: "Selon la légende, Charles le Chauve aurait tracé quatre traits de sang avec ses doigts sur le bouclier d'or de Guifred le Velu, comte de Barcelone.",
+    shield: sh(pat("paly", "or", "gueules", 9)),
+  },
+  {
+    id: "navarre",
+    name: "Royaume de Navarre",
+    subtitle: "Navarre, depuis Sanche VII",
+    category: "etats",
+    difficulty: 3,
+    blazon: "De gueules aux chaînes d'or posées en orle, en croix et en sautoir, chargées en cœur d'une émeraude de sinople.",
+    note: "On dit que ces chaînes rappellent celles du camp almohade brisées à la bataille de Las Navas de Tolosa (1212), la pierre centrale étant l'émeraude du turban du calife.",
+    shield: sh(P("gueules"), [ord("chains", "or")]),
+  },
+  {
+    id: "danemark",
+    name: "Royaume de Danemark",
+    subtitle: "Danemark, depuis le XIIe siècle",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'or semé de cœurs de gueules, à trois lions léopardés d'azur, couronnés d'or, armés et lampassés de gueules, l'un sur l'autre.",
+    note: "L'un des plus anciens blasons royaux d'Europe encore en usage. Les trois lions sont presque identiques à ceux d'Angleterre, mais en azur sur or.",
+    shield: sh(P("or"), undefined, [
+      { type: "heart", t: "gueules", at: "semy", s: 9, gap: 1.35, under: true },
+      { type: "leopard", t: "azur", at: "3pal", s: 42, crowned: true },
+    ]),
+  },
+  {
+    id: "suede",
+    name: "Royaume de Suède",
+    subtitle: "Suède, « Tre Kronor »",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'azur à trois couronnes d'or, deux et une.",
+    note: "Les trois couronnes (Tre Kronor) sont attestées dès 1336. Elles figurent toujours sur les maillots et les armoiries nationales suédoises.",
+    shield: sh(P("azur"), undefined, [{ type: "crown", t: "or", at: "2-1", s: 36 }]),
+  },
+  {
+    id: "pologne",
+    name: "Royaume de Pologne",
+    subtitle: "Pologne, l'Aigle blanc",
+    category: "etats",
+    difficulty: 1,
+    blazon: "De gueules à l'aigle d'argent, couronné, becqué et membré d'or.",
+    note: "Selon la légende, Lech, fondateur du peuple polonais, découvrit un nid d'aigle blanc au coucher du soleil et en fit son emblème.",
+    shield: sh(P("gueules"), undefined, [eagle("argent", 70), { type: "crown", t: "or", at: [[50, 15]], s: 18 }]),
+  },
+  {
+    id: "saint-empire",
+    name: "Saint-Empire romain germanique",
+    subtitle: "Empire, à partir de Sigismond",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'or à l'aigle bicéphale de sable, becquée, langued et membrée de gueules, les têtes nimbées d'or.",
+    note: "L'aigle à deux têtes symbolise le pouvoir sur l'Orient et l'Occident. Les empereurs germaniques l'adoptent à la fin du Moyen Âge ; l'Autriche et la Russie la reprendront.",
+    shield: sh(P("or"), undefined, [eagle("sable", 74, "eagle2")]),
+  },
+  {
+    id: "autriche",
+    name: "Duché d'Autriche",
+    subtitle: "Autriche, maison de Babenberg puis Habsbourg",
+    category: "etats",
+    difficulty: 1,
+    blazon: "De gueules à la fasce d'argent.",
+    note: "Selon la légende, le duc Léopold V revint de la croisade (1191) l'habit blanc taché de sang, sauf sous son ceinturon : une fasce blanche sur fond rouge.",
+    shield: sh(P("gueules"), [ord("fess", "argent", { w: 26 })]),
+  },
+  {
+    id: "jerusalem",
+    name: "Royaume de Jérusalem",
+    subtitle: "États latins d'Orient",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'argent à la croix potencée d'or, cantonnée de quatre croisettes du même.",
+    note: "Des armes « à enquérir » : de l'or sur de l'argent, ce qui viole la règle de contrariété des émaux. On voulait ainsi montrer que Jérusalem est unique au monde.",
+    shield: sh(P("argent"), undefined, [
+      { type: "crosspotent", t: "or", at: [[50, 48]], s: 54 },
+      { type: "crosslet", t: "or", at: "4cantons", s: 22 },
+    ]),
+  },
+  {
+    id: "savoie",
+    name: "Maison de Savoie",
+    subtitle: "Comté puis duché de Savoie",
+    category: "etats",
+    difficulty: 1,
+    blazon: "De gueules à la croix d'argent.",
+    note: "Les armes de la Savoie sont le blason des rois d'Italie jusqu'en 1946 (avec un écu de Savoie sur le drapeau italien) et inspirent le drapeau de la Suisse, avec les couleurs inversées.",
+    shield: sh(P("gueules"), [ord("cross", "argent")]),
+  },
+  {
+    id: "genes",
+    name: "République de Gênes",
+    subtitle: "Croix de saint Georges",
+    category: "etats",
+    difficulty: 1,
+    blazon: "D'argent à la croix de gueules.",
+    note: "La croix de saint Georges est aussi l'emblème de l'Angleterre et de Milan. Les marins génois la hissaient en mer ; l'Angleterre acheta la protection de leur pavillon.",
+    shield: sh(P("argent"), [ord("cross", "gueules")]),
+  },
+  {
+    id: "boheme",
+    name: "Royaume de Bohême",
+    subtitle: "Bohême, maison de Luxembourg",
+    category: "etats",
+    difficulty: 2,
+    blazon: "De gueules au lion d'argent, la queue fourchée passée en sautoir, couronné d'or, armé et lampassé d'or.",
+    note: "Le lion à queue fourchée est l'emblème historique des rois de Bohême depuis Ottokar Ier. Il figure aujourd'hui sur les armes de la République tchèque.",
+    shield: sh(P("gueules"), undefined, [lion("argent", true)]),
+  },
+  {
+    id: "hongrie",
+    name: "Royaume de Hongrie (Árpád)",
+    subtitle: "Hongrie, dynastie arpadienne",
+    category: "etats",
+    difficulty: 2,
+    blazon: "Fascé de gueules et d'argent de huit pièces.",
+    note: "Les bandes rouges et blanches de la dynastie d'Árpád figurent encore aujourd'hui dans les armes de la Hongrie, à côté de la croix de saint Étienne.",
+    shield: sh(pat("barry", "gueules", "argent", 8)),
+  },
+  {
+    id: "brandebourg",
+    name: "Margraviat de Brandebourg",
+    subtitle: "Brandebourg, Allemagne",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'argent à l'aigle de gueules, becquée, membrée et couronnée d'or.",
+    note: "Le margraviat de Brandebourg fut le noyau de la future Prusse. Son aigle rouge sur fond argent est resté l'emblème du Land jusqu'à nos jours.",
+    shield: sh(P("argent"), undefined, [eagle("gueules", 74)]),
+  },
+  {
+    id: "baviere",
+    name: "Maison de Bavière",
+    subtitle: "Wittelsbach",
+    category: "etats",
+    difficulty: 1,
+    blazon: "Fuselé en bande d'argent et d'azur.",
+    note: "Le « fuselé » (losanges allongés) des Wittelsbach est devenu l'un des symboles de la Bavière : on le retrouve sur les maillots du Bayern et sur les bouteilles de bière.",
+    shield: sh(pat("lozengy", "argent", "azur", 5)),
+  },
+  {
+    id: "hohenzollern",
+    name: "Maison de Hohenzollern",
+    subtitle: "Souabe, futurs rois de Prusse",
+    category: "etats",
+    difficulty: 2,
+    blazon: "Écartelé d'argent et de sable.",
+    note: "Un écartelé très simple, composé de deux émaux seulement. Les couleurs noir et blanc se retrouveront dans le drapeau de la Prusse.",
+    shield: {
+      field: P("argent"),
+      quarters: [sh(P("argent")), sh(P("sable")), sh(P("sable")), sh(P("argent"))],
+    },
+  },
+  {
+    id: "bade",
+    name: "Margraviat de Bade",
+    subtitle: "Maison de Zähringen",
+    category: "etats",
+    difficulty: 2,
+    blazon: "D'or à la bande de gueules.",
+    note: "Pour ne pas la confondre avec les armes de Lorraine (qui ont trois alérions sur la bande), retenez : la bande de Bade est seule, sans meuble.",
+    shield: sh(P("or"), [ord("bend", "gueules")]),
+  },
+  {
+    id: "saxe",
+    name: "Duché de Saxe",
+    subtitle: "Maison d'Ascanie",
+    category: "etats",
+    difficulty: 3,
+    blazon: "Burelé de sable et d'or de huit pièces, au crancelin de sinople brochant en bande.",
+    note: "Le crancelin est une couronne de rue stylisée posée en bande. Frédéric Barberousse concéda ces armes à Bernard d'Ascanie, duc de Saxe, en 1180.",
+    shield: sh(pat("barry", "sable", "or", 8), [ord("bend", "sinople", { w: 11, over: true })]),
+  },
+
+  // ───────── Provinces & principautés
+  {
+    id: "flandre",
+    name: "Comté de Flandre",
+    subtitle: "Flandre",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "D'or au lion de sable, armé et lampassé de gueules.",
+    note: "Le Vlaamse Leeuw, lion noir de Flandre, est devenu l'emblème de la Flandre belge. Les milices flamandes le brandissaient à la bataille des Éperons d'or (1302).",
+    shield: sh(P("or"), undefined, [lion("sable")]),
+  },
+  {
+    id: "brabant",
+    name: "Duché de Brabant",
+    subtitle: "Brabant",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "De sable au lion d'or, armé et lampassé de gueules.",
+    note: "Le miroir inversé des armes de Flandre : lion d'or sur champ de sable. Le Brabant est l'ancêtre des armes de la Belgique actuelle (lion d'or sur fond noir).",
+    shield: sh(P("sable"), undefined, [lion("or")]),
+  },
+  {
+    id: "hollande",
+    name: "Comté de Hollande",
+    subtitle: "Hollande",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "D'or au lion de gueules, armé et lampassé d'azur.",
+    note: "Le lion rouge de Hollande a donné son nom aux Pays-Bas modernes. Il se distingue du lion d'Écosse par l'absence de trescheur.",
+    shield: sh(P("or"), undefined, [lion("gueules")]),
+  },
+  {
+    id: "luxembourg",
+    name: "Duché de Luxembourg",
+    subtitle: "Luxembourg",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "Burelé d'argent et d'azur de dix pièces, au lion de gueules, armé, lampassé et couronné d'or, la queue fourchée et passée en sautoir, brochant sur le tout.",
+    note: "Les armes du Grand-Duché sont presque inchangées depuis Henri V (1288). Elles sont à l'origine du drapeau luxembourgeois rouge, blanc et bleu clair.",
+    shield: sh(pat("barry", "argent", "azur", 10), undefined, [lion("gueules", true)]),
+  },
+  {
+    id: "hainaut",
+    name: "Comté de Hainaut",
+    subtitle: "Maison d'Avesnes",
+    category: "provinces",
+    difficulty: 3,
+    blazon: "Écartelé : aux 1 et 4 d'or au lion de sable (Flandre) ; aux 2 et 3 d'or au lion de gueules (Hollande).",
+    note: "Jean d'Avesnes, héritier de la Flandre et de la Hollande par sa mère, écartela les armes de ses deux domaines : le Hainaut les adopta.",
+    shield: {
+      field: P("or"),
+      quarters: [qLion("or", "sable"), qLion("or", "gueules"), qLion("or", "gueules"), qLion("or", "sable")],
+    },
+  },
+  {
+    id: "lorraine",
+    name: "Duché de Lorraine",
+    subtitle: "Lorraine, maison d'Alsace",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "D'or à la bande de gueules chargée de trois alérions d'argent.",
+    note: "Les alérions sont de petits aigles sans bec ni pattes. La légende dit que Godefroy de Bouillon, en un seul coup de flèche, en aurait transpercé trois sur un étendard.",
+    shield: sh(P("or"), [ord("bend", "gueules")], [
+      { type: "alerion", t: "argent", at: [[28, 32], [50, 58], [72, 84]], s: 24 },
+    ]),
+  },
+  {
+    id: "toulouse",
+    name: "Comté de Toulouse",
+    subtitle: "Occitanie, maison de Saint-Gilles",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "De gueules à la croix cléchée, vidée et pommetée d'or.",
+    note: "La croix occitane est l'emblème du comté de Toulouse depuis Raymond IV de Saint-Gilles, qui partit pour la première croisade en 1096. On la voit aujourd'hui dans toute l'Occitanie.",
+    shield: sh(P("gueules"), undefined, [
+      { type: "croixtoulouse", t: "or", t2: "gueules", at: [[50, 52]], s: 76 },
+    ]),
+  },
+  {
+    id: "foix",
+    name: "Comté de Foix",
+    subtitle: "Pyrénées",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "D'or à trois pals de gueules.",
+    note: "Un cousin des armes d'Aragon (quatre pals) : trois pals seulement. Gaston Fébus, le plus célèbre comte de Foix, les arborait sur ses bannières.",
+    shield: sh(pat("paly", "or", "gueules", 7)),
+  },
+  {
+    id: "vermandois",
+    name: "Comté de Vermandois",
+    subtitle: "Picardie",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "Échiqueté d'or et d'azur.",
+    note: "L'échiqueté est l'un des plus anciens motifs héraldiques, parfois lié aux jeux de table ou aux comptoirs des changeurs.",
+    shield: sh(pat("chequy", "or", "azur", 6)),
+  },
+  {
+    id: "dreux",
+    name: "Maison de Dreux",
+    subtitle: "Branche cadette capétienne",
+    category: "provinces",
+    difficulty: 3,
+    blazon: "Échiqueté d'or et d'azur, au franc-quartier d'hermine.",
+    note: "Robert de Dreux, petit-fils de Louis VI, reprend l'échiqueté des Vermandois en y ajoutant un franc-quartier d'hermine, qui rappellera plus tard les ducs de Bretagne.",
+    shield: sh(pat("chequy", "or", "azur", 6), [ord("canton", "hermine", { w: 40 })]),
+  },
+  {
+    id: "bourgogne",
+    name: "Duché de Bourgogne (ancien)",
+    subtitle: "Bourgogne capétienne",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "Bandé d'or et d'azur de six pièces, à la bordure de gueules.",
+    note: "Les armes des premiers ducs capétiens de Bourgogne (dès 1032). Les ducs Valois les écartèleront ensuite avec les armes de France.",
+    shield: sh(pat("bendy", "or", "azur", 6), [ord("bordure", "gueules")]),
+  },
+  {
+    id: "bretagne",
+    name: "Duché de Bretagne",
+    subtitle: "Bretagne, depuis Pierre Mauclerc",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "D'hermine plain.",
+    note: "Le champ « plain » recouvert de mouchetures d'hermine. Selon la légende, Anne de Bretagne (ou un duc plus ancien) préféra mourir plutôt que de salir une hermine blanche.",
+    shield: sh(P("hermine")),
+  },
+  {
+    id: "normandie",
+    name: "Duché de Normandie",
+    subtitle: "Normandie",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "De gueules à deux léopards d'or, armés et lampassés d'azur.",
+    note: "Les deux léopards de Normandie sont ceux de Guillaume le Conquérant. En ajoutant un troisième (Aquitaine), Richard Cœur de Lion donnera les armes d'Angleterre.",
+    shield: sh(P("gueules"), undefined, [{ type: "leopard", t: "or", at: "2pal", s: 46 }]),
+  },
+  {
+    id: "guyenne",
+    name: "Duché de Guyenne",
+    subtitle: "Aquitaine",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "De gueules au léopard d'or, armé et lampassé d'azur.",
+    note: "Après le mariage d'Aliénor avec Henri Plantagenêt (1152), le léopard d'Aquitaine rejoint les armes anglaises.",
+    shield: sh(P("gueules"), undefined, [{ type: "leopard", t: "or", at: [[50, 56]], s: 68 }]),
+  },
+  {
+    id: "dauphine",
+    name: "Dauphiné",
+    subtitle: "Dauphiné, Grenoble",
+    category: "provinces",
+    difficulty: 1,
+    blazon: "D'or au dauphin d'azur, crêté, barbé, loré et oreillé de gueules.",
+    note: "Le dauphin de Viennois a donné son nom au titre de « dauphin », héritier de la couronne de France depuis le rachat de la province en 1349.",
+    shield: sh(P("or"), undefined, [{ type: "dolphin", t: "azur", at: [[50, 58]], s: 74 }]),
+  },
+  {
+    id: "anjou",
+    name: "Duché d'Anjou (moderne)",
+    subtitle: "Anjou, maison de Valois-Anjou",
+    category: "provinces",
+    difficulty: 2,
+    blazon: "D'azur semé de fleurs de lys d'or, à la bordure de gueules.",
+    note: "Un exemple de brisure : un cadet de la famille royale ajoute une bordure aux armes de France pour montrer qu'il n'est pas l'aîné.",
+    shield: sh(
+      P("azur"),
+      [ord("bordure", "gueules")],
+      [{ type: "fleurdelis", t: "or", at: "semy", s: 15, under: true }],
+    ),
+  },
+  {
+    id: "franche-comte",
+    name: "Franche-Comté",
+    subtitle: "Comté de Bourgogne",
+    category: "provinces",
+    difficulty: 3,
+    blazon: "D'azur semé de billettes d'or, au lion du même.",
+    note: "Un champ semé de petits rectangles (billettes) avec un lion : ces armes sont proches de celles de la maison de Nassau.",
+    shield: sh(P("azur"), undefined, [
+      { type: "billet", t: "or", at: "semy", s: 11, gap: 1.1, under: true },
+      lion("or", false, 66),
+    ]),
+  },
+
+  // ───────── Villes
+  {
+    id: "strasbourg",
+    name: "Strasbourg",
+    subtitle: "Alsace",
+    category: "villes",
+    difficulty: 2,
+    blazon: "De gueules à la bande d'argent.",
+    note: "Les couleurs de la ville, rouge et blanc, se retrouvent sur les armes de l'évêché. Le blason est un des plus simples de France.",
+    shield: sh(P("gueules"), [ord("bend", "argent")]),
+  },
+  {
+    id: "lyon",
+    name: "Lyon",
+    subtitle: "Rhône",
+    category: "villes",
+    difficulty: 2,
+    blazon: "De gueules au lion d'argent, au chef d'azur chargé de trois fleurs de lys d'or.",
+    note: "Le chef d'azur aux trois fleurs de lys est une marque de fidélité à la couronne. Lyon l'obtient dès le XIVe siècle.",
+    shield: sh(
+      P("gueules"),
+      [ord("chief", "azur", { w: 28 })],
+      [
+        { type: "lion", t: "argent", at: [[50, 70]], s: 56 },
+        { type: "fleurdelis", t: "or", at: [[24, 15], [50, 15], [76, 15]], s: 20 },
+      ],
+    ),
+  },
+  {
+    id: "paris",
+    name: "Paris",
+    subtitle: "Île-de-France",
+    category: "villes",
+    difficulty: 1,
+    blazon: "De gueules à la nef équipée d'argent, voguant sur des ondes du même, au chef d'azur semé de fleurs de lys d'or.",
+    note: "La nef rappelle la puissante corporation des marchands de l'eau, qui gouvernait la ville. Elle inspire la devise Fluctuat nec mergitur.",
+    shield: sh(
+      P("gueules"),
+      [ord("chief", "azur", { w: 26 })],
+      [
+        { type: "ship", t: "argent", at: [[50, 68]], s: 62 },
+        { type: "fleurdelis", t: "or", at: [[16, 14], [33, 14], [50, 14], [67, 14], [84, 14]], s: 14 },
+      ],
+    ),
+  },
+  {
+    id: "marseille",
+    name: "Marseille",
+    subtitle: "Provence",
+    category: "villes",
+    difficulty: 1,
+    blazon: "D'argent à la croix d'azur.",
+    note: "Marseille arbore une croix azur sur fond blanc depuis le Moyen Âge, à l'image de ses couleurs de mer et de ciel.",
+    shield: sh(P("argent"), [ord("cross", "azur")]),
+  },
+  {
+    id: "lille",
+    name: "Lille",
+    subtitle: "Flandre française",
+    category: "villes",
+    difficulty: 1,
+    blazon: "De gueules à la fleur de lys d'argent.",
+    note: "Lille, « l'Isle », arbore une fleur de lys d'argent sur fond rouge. Elle diffère de la fleur de lys d'or sur azur de la France.",
+    shield: sh(P("gueules"), undefined, [{ type: "fleurdelis", t: "argent", at: [[50, 54]], s: 64 }]),
+  },
+  {
+    id: "florence",
+    name: "Florence",
+    subtitle: "Toscane",
+    category: "villes",
+    difficulty: 2,
+    blazon: "D'argent à la fleur de lys de gueules.",
+    note: "Le « giglio fiorentino » est une fleur de lys rouge sur fond blanc. Elle aurait donné son nom à la ville (Florentia, « fleurie »), cité de fleurs.",
+    shield: sh(P("argent"), undefined, [{ type: "fleurdelis", t: "gueules", at: [[50, 54]], s: 64 }]),
+  },
+  {
+    id: "metz",
+    name: "Metz",
+    subtitle: "Lorraine",
+    category: "villes",
+    difficulty: 2,
+    blazon: "Parti d'argent et de sable.",
+    note: "Un « parti » : l'écu est coupé verticalement en deux moitiés d'émaux différents. Metz est une ville aux armes d'une extrême simplicité.",
+    shield: sh({ k: "party", d: "pale", a: "argent", b: "sable" }),
+  },
+  {
+    id: "barcelone",
+    name: "Barcelone",
+    subtitle: "Catalogne",
+    category: "villes",
+    difficulty: 3,
+    blazon: "Écartelé : aux 1 et 4 d'argent à la croix de gueules (saint Georges) ; aux 2 et 3 d'or à quatre pals de gueules (Aragon).",
+    note: "La ville combine la croix de saint Georges, patron de la Catalogne, avec les pals d'Aragon, symbole de la couronne qu'elle a servie.",
+    shield: {
+      field: P("argent"),
+      quarters: [qCross("gueules", "argent"), qPales, qPales, qCross("gueules", "argent")],
+    },
+  },
+
+  // ───────── Maisons & personnages
+  {
+    id: "montmorency",
+    name: "Maison de Montmorency",
+    subtitle: "Premiers barons de France",
+    category: "maisons",
+    difficulty: 3,
+    blazon: "D'or à la croix de gueules, cantonnée de seize alérions d'azur.",
+    note: "Leur devise est « Dieu aide au premier baron chrétien ». Les seize alérions seraient les trophées pris à l'empereur Othon, tué à Bouvines, d'après la tradition.",
+    shield: sh(P("or"), [ord("cross", "gueules")], [{ type: "alerion", t: "azur", at: montAlerions, s: 13 }]),
+  },
+  {
+    id: "rohan",
+    name: "Maison de Rohan",
+    subtitle: "Bretagne",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "De gueules à neuf macles d'or, accolées et aboutées, 3, 3, 3.",
+    note: "Les macles (losanges évidés) sont des mailles de cotte de mailles ou les « fusils » à filer. La maison de Rohan en a fait sa marque jusqu'au XXe siècle.",
+    shield: sh(P("gueules"), undefined, [{ type: "mascle", t: "or", at: "3x3", s: 25 }]),
+  },
+  {
+    id: "orleans",
+    name: "Maison d'Orléans",
+    subtitle: "Branche cadette des Valois et des Bourbons",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "D'azur à trois fleurs de lys d'or, au lambel d'argent.",
+    note: "Le lambel est le signe d'un fils cadet : il est posé en chef sur les armes de France. La maison d'Orléans l'a porté de Louis d'Orléans (1392) à Louis-Philippe.",
+    shield: sh(P("azur"), [ord("label", "argent")], [
+      { type: "fleurdelis", t: "or", at: [[28, 52], [72, 52], [50, 92]], s: 36 },
+    ]),
+  },
+  {
+    id: "bourbon",
+    name: "Maison de Bourbon",
+    subtitle: "Bourbon-Vendôme, futurs rois de France",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "D'azur à trois fleurs de lys d'or, à la bande de gueules brochant sur le tout.",
+    note: "Henri IV, premier roi Bourbon, porte les armes de France brisées d'une bande de gueules ; devenu roi, il y renonce pour le simple écu de France.",
+    shield: sh(P("azur"), [ord("bend", "gueules", { over: true, w: 20 })], [{ type: "fleurdelis", t: "or", at: "2-1" }]),
+  },
+  {
+    id: "medicis",
+    name: "Maison de Médicis",
+    subtitle: "Florence, banquiers et papes",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "D'or à cinq tourteaux de gueules, et en chef un tourteau d'azur chargé de trois fleurs de lys d'or.",
+    note: "Ces boules sont des pilules (médecins), des besants (banquiers) ou des bosses de bouclier, selon les légendes. Le tourteau bleu fleurdelisé est un don de Louis XI.",
+    shield: sh(P("or"), undefined, [
+      { type: "roundel", t: "gueules", at: [[22, 34], [78, 34], [28, 68], [72, 68], [50, 94]], s: 30 },
+      { type: "roundel", t: "azur", at: [[50, 24]], s: 34 },
+      { type: "fleurdelis", t: "or", at: [[43, 20], [57, 20], [50, 31]], s: 10 },
+    ]),
+  },
+  {
+    id: "courtenay",
+    name: "Maison de Courtenay",
+    subtitle: "Empereurs latins de Constantinople",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "D'or à trois tourteaux de gueules, deux et un.",
+    note: "Les Courtenay ont régné sur l'Empire latin de Constantinople au XIIIe siècle. Leurs trois tourteaux rouges se retrouvent en Angleterre, dans les armes des comtes de Devon.",
+    shield: sh(P("or"), undefined, [{ type: "roundel", t: "gueules", at: "2-1", s: 34 }]),
+  },
+  {
+    id: "harcourt",
+    name: "Maison d'Harcourt",
+    subtitle: "Normandie",
+    category: "maisons",
+    difficulty: 2,
+    blazon: "De gueules à deux fasces d'or.",
+    note: "Les Harcourt ont suivi Guillaume le Conquérant en Angleterre. Leurs deux fasces d'or sur gueules figurent dans les armes d'illustres familles de Normandie.",
+    shield: sh(pat("barry", "gueules", "or", 5)),
+  },
+  {
+    id: "du-guesclin",
+    name: "Bertrand du Guesclin",
+    subtitle: "Connétable de France, XIVe siècle",
+    category: "maisons",
+    difficulty: 3,
+    blazon: "D'argent à l'aigle éployée de sable, becquée et membrée de gueules, à la bande de gueules brochant sur le tout.",
+    note: "Du Guesclin, le « bon connétable », porte l'aigle de l'Empire brisée d'une bande rouge qui passe par-dessus l'oiseau. Il lui valut son surnom de « Dogue noir de Brocéliande ».",
+    shield: sh(P("argent"), [ord("bend", "gueules", { over: true, w: 20 })], [eagle("sable", 74)]),
+  },
+];
+
+export const ARMS_BY_ID: Record<string, ArmEntry> = Object.fromEntries(ARMORIAL.map((a) => [a.id, a]));
+
+/** signature textuelle d'un blason, pour mesurer les ressemblances */
+export function signature(spec: ShieldSpec): Set<string> {
+  const out = new Set<string>();
+  const field = spec.field;
+  if (field.k === "plain") out.add(`f:${field.t}`);
+  else if (field.k === "party") {
+    out.add(`f:${field.a}`);
+    out.add(`f:${field.b}`);
+    out.add(`p:${field.d}`);
+  } else {
+    out.add(`f:${field.a}`);
+    out.add(`f:${field.b}`);
+    out.add(`p:${field.p}`);
+  }
+  spec.ordinaries?.forEach((o) => {
+    out.add(`o:${o.k}`);
+    out.add(`oc:${o.t}`);
+  });
+  spec.charges?.forEach((c) => {
+    out.add(`c:${c.type}`);
+    out.add(`cc:${c.t}`);
+  });
+  spec.quarters?.forEach((q) => signature(q).forEach((x) => out.add(x)));
+  if (spec.quarters) out.add("q");
+  return out;
+}
+
+export function similarity(a: ArmEntry, b: ArmEntry): number {
+  const sa = signature(a.shield);
+  const sb = signature(b.shield);
+  let inter = 0;
+  sa.forEach((x) => {
+    if (sb.has(x)) inter++;
+  });
+  const union = sa.size + sb.size - inter;
+  return union === 0 ? 0 : inter / union;
+}

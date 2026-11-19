@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  --color-parch: #f3e8cc;
+  --color-parch-2: #eadbb2;
+  --color-card: #fcf7ea;
+  --color-line: #d6c294;
+  --color-ink: #2a2018;
+  --color-ink-soft: #5b4b3a;
+  --color-wine: #7b1e2b;
+  --color-wine-dark: #5d1420;
+  --color-gold: #b98a1b;
+  --color-navy: #1e3a6e;
+  --color-ok: #2f7d3e;
+  --color-ko: #b3261e;
+  --font-serif-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-ink);
+  font-family: var(--font-serif-display);
+  background-color: var(--color-parch);
+  background-image:
+    radial-gradient(1200px 500px at 50% -10%, rgba(255, 252, 240, 0.9), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(120, 90, 40, 0.025) 0 2px, transparent 2px 6px);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif-display);
+  letter-spacing: 0.01em;
+}
+
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 6px 18px -10px rgba(70, 45, 10, 0.45);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 2px solid transparent;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  cursor: pointer;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-primary {
+  background: linear-gradient(180deg, #92283a, var(--color-wine-dark));
+  color: #fdf3d7;
+  box-shadow: 0 6px 14px -6px rgba(93, 20, 32, 0.8);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-wine-dark);
+  border-color: var(--color-wine);
+}
+.btn-ghost:hover {
+  background: rgba(123, 30, 43, 0.08);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-line);
+  background: #fffaf0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.chip[data-on="true"] {
+  background: var(--color-wine);
+  border-color: var(--color-wine);
+  color: #fdf3d7;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--color-gold);
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+.shield-shadow {
+  filter: drop-shadow(0 6px 8px rgba(40, 25, 5, 0.3));
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.pop {
+  animation: pop 0.25s ease both;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+.shake {
+  animation: shake 0.3s ease;
+}
+
+.prose-lesson p {
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+}

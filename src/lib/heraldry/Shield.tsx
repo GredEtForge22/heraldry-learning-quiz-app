@@ -121,6 +121,15 @@ function defaultSecondary(type: ChargeType, t: Tincture): Tincture {
       return t === "azur" ? "sable" : "azur";
     case "dolphin":
       return t === "gueules" ? "azur" : "gueules";
+    case "bear":
+      return t === "gueules" ? "azur" : "gueules";
+    case "tree":
+      return "sable"; // tronc
+    case "tower":
+    case "castle":
+      return t === "azur" ? "sable" : "azur";
+    case "sword":
+      return "or";
     default:
       return "gueules";
   }

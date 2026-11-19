@@ -2,13 +2,34 @@ import { GLOSSARY } from "@/lib/heraldry/glossary";
 import { TINCTURE_COLORS, TINCTURE_LABELS, type Tincture } from "@/lib/heraldry/types";
 import { Shield } from "@/lib/heraldry/Shield";
 
-const ORDER: Tincture[] = ["or", "argent", "azur", "gueules", "sable", "sinople", "pourpre", "hermine"];
+/** Émaux solides (pas les fourrures) */
+type SolidTincture = Exclude<Tincture, "hermine" | "vair">;
+
+const ORDER: SolidTincture[] = ["or", "argent", "azur", "gueules", "sable", "sinople", "pourpre"];
 
 const GROUPS: { label: string; items: Tincture[] }[] = [
   { label: "Métaux", items: ["or", "argent"] },
   { label: "Couleurs", items: ["azur", "gueules", "sable", "sinople", "pourpre"] },
-  { label: "Fourrures", items: ["hermine"] },
+  { label: "Fourrures", items: ["hermine", "vair"] },
 ];
+
+function swatchStyle(t: Tincture): React.CSSProperties {
+  if (t === "hermine") {
+    return {
+      background:
+        "radial-gradient(circle at 50% 40%, #1c1c1f 0 2px, transparent 3px) #f6f4ee",
+    };
+  }
+  if (t === "vair") {
+    // approximation CSS du vair (azur / argent en damier de cloches)
+    return {
+      background:
+        "linear-gradient(135deg, #2457b3 25%, #f6f4ee 25% 50%, #2457b3 50% 75%, #f6f4ee 75%)",
+      backgroundSize: "10px 10px",
+    };
+  }
+  return { background: TINCTURE_COLORS[t] };
+}
 
 export function TinctureList() {
   return (
@@ -21,11 +42,7 @@ export function TinctureList() {
               <li key={t} className="flex items-center gap-3">
                 <span
                   className="inline-block h-8 w-8 rounded-full border border-ink/40"
-                  style={
-                    t === "hermine"
-                      ? { background: "radial-gradient(circle at 50% 40%, #1c1c1f 0 2px, transparent 3px) #f6f4ee" }
-                      : { background: TINCTURE_COLORS[t] }
-                  }
+                  style={swatchStyle(t)}
                 />
                 <span>
                   <span className="font-semibold">{TINCTURE_LABELS[t]}</span>
@@ -75,10 +92,13 @@ export function HachuresTable() {
         </defs>
       </svg>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-        {ORDER.filter((t) => t !== "hermine").map((t) => (
+        {ORDER.map((t) => (
           <div key={t} className="text-center">
             <div className="grid grid-cols-2 gap-1">
-              <div className="h-14 rounded border border-ink/40" style={{ background: t === "argent" ? "#fff" : TINCTURE_COLORS[t as Exclude<Tincture, "hermine">] }} />
+              <div
+                className="h-14 rounded border border-ink/40"
+                style={{ background: t === "argent" ? "#fff" : TINCTURE_COLORS[t] }}
+              />
               <svg className="h-14 w-full rounded border border-ink/40" aria-hidden>
                 <rect width="100%" height="100%" fill={t === "argent" ? "#fff" : `url(#h-${t})`} />
               </svg>
@@ -90,6 +110,7 @@ export function HachuresTable() {
       <p className="mt-3 text-sm text-ink-soft">
         Or : points · Argent : blanc uni · Azur : traits horizontaux · Gueules : traits verticaux · Sable : quadrillage ·
         Sinople : diagonales descendant vers la dextre · Pourpre : diagonales descendant vers la senestre.
+        Les fourrures (hermine, vair) n&apos;ont pas de hachure classique : on les dessine en motif.
       </p>
     </div>
   );
@@ -103,9 +124,19 @@ export function EcuPoints() {
         <Shield spec={spec} className="w-full" />
         <div className="pointer-events-none absolute inset-0 text-center text-sm font-bold text-wine-dark">
           <span className="absolute left-1/2 top-[8%] -translate-x-1/2">CHEF</span>
-          <span className="absolute left-[12%] top-[42%] max-w-[26%] leading-tight">DEXTRE<br /><span className="text-[11px] font-normal text-ink-soft">(à gauche)</span></span>
-          <span className="absolute right-[12%] top-[42%] max-w-[26%] leading-tight">SENESTRE<br /><span className="text-[11px] font-normal text-ink-soft">(à droite)</span></span>
-          <span className="absolute left-1/2 top-[44%] -translate-x-1/2 rounded-full border-2 border-dashed border-wine/50 px-2 py-0.5 text-xs">CŒUR</span>
+          <span className="absolute left-[12%] top-[42%] max-w-[26%] leading-tight">
+            DEXTRE
+            <br />
+            <span className="text-[11px] font-normal text-ink-soft">(à gauche)</span>
+          </span>
+          <span className="absolute right-[12%] top-[42%] max-w-[26%] leading-tight">
+            SENESTRE
+            <br />
+            <span className="text-[11px] font-normal text-ink-soft">(à droite)</span>
+          </span>
+          <span className="absolute left-1/2 top-[44%] -translate-x-1/2 rounded-full border-2 border-dashed border-wine/50 px-2 py-0.5 text-xs">
+            CŒUR
+          </span>
           <span className="absolute left-1/2 top-[80%] -translate-x-1/2">POINTE</span>
         </div>
       </div>

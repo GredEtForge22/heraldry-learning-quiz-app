@@ -14,11 +14,11 @@ import {
   type Tincture,
 } from "@/lib/heraldry/types";
 
-type FieldKind = "plain" | "pale" | "fess" | "bend" | "bendsin" | "barry" | "paly" | "bendy" | "chequy" | "lozengy" | "hermine";
-
+type FieldKind = "plain" | "pale" | "fess" | "bend" | "bendsin" | "barry" | "paly" | "bendy" | "chequy" | "lozengy" | "hermine" | "vair";
 const FIELD_KINDS: { id: FieldKind; label: string }[] = [
   { id: "plain", label: "Uni" },
   { id: "hermine", label: "Hermine" },
+  { id: "vair", label: "Vair" },
   { id: "pale", label: "Parti" },
   { id: "fess", label: "Coupé" },
   { id: "bend", label: "Tranché" },
@@ -124,6 +124,7 @@ function buildSpec(s: State): ShieldSpec {
   let field: FieldSpec;
   if (s.kind === "plain") field = { k: "plain", t: s.c1 };
   else if (s.kind === "hermine") field = { k: "plain", t: "hermine" };
+  else if (s.kind === "vair") field = { k: "plain", t: "vair" };
   else if (["pale", "fess", "bend", "bendsin"].includes(s.kind))
     field = { k: "party", d: s.kind as "pale", a: s.c1, b: s.c2 };
   else {
@@ -147,6 +148,7 @@ function blazonText(s: State): string {
   const parties: Record<string, string> = { pale: "Parti", fess: "Coupé", bend: "Tranché", bendsin: "Taillé" };
   if (s.kind === "plain") t = Cap(de(s.c1));
   else if (s.kind === "hermine") t = "D'hermine plain";
+  else if (s.kind === "vair") t = "De vair plain";
   else if (parties[s.kind]) t = `${parties[s.kind]} ${de(s.c1)} et ${de(s.c2)}`;
   else {
     const n = s.kind === "barry" ? "huit pièces" : s.kind === "paly" ? "six pièces" : s.kind === "bendy" ? "six pièces" : "";

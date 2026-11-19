@@ -23,7 +23,9 @@ interface Ctx {
 }
 
 const fillOf = (t: Tincture, ctx: Ctx) =>
-  t === "hermine" ? `url(#${ctx.uid}-erm)` : TINCTURE_COLORS[t];
+  t === "hermine" ? `url(#${ctx.uid}-erm)` :
+  t === "vair" ? `url(#${ctx.uid}-vair)` :
+  TINCTURE_COLORS[t];
 
 const LAYOUTS: Record<LayoutName, { pos: [number, number][]; s: number }> = {
   "1": { pos: [[50, 52]], s: 56 },

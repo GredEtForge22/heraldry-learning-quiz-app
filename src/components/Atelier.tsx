@@ -238,7 +238,7 @@ export function Atelier() {
   const text = blazonText(s);
   const warns = warnings(s);
   const set = <K extends keyof State>(k: K, v: State[K]) => setS((cur) => ({ ...cur, [k]: v }));
-  const twoColors = s.kind !== "plain" && s.kind !== "hermine";
+  const twoColors = s.kind !== "plain" && s.kind !== "hermine" && s.kind !== "vair";
 
   const randomize = () => {
     const metals: Tincture[] = ["or", "argent"];

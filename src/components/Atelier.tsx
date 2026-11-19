@@ -74,13 +74,20 @@ const CHARGES: Record<ChargeType | "none", ChargeInfo> = {
   lozenge: { label: "Losange", one: "au losange", many: "losanges" },
   crosspotent: { label: "Croix potencée", one: "à la croix potencée", many: "croix potencées" },
   croixtoulouse: { label: "Croix occitane", one: "à la croix cléchée", many: "croix cléchées" },
+  rose: { label: "Rose", one: "à la rose", many: "roses" },
+  key: { label: "Clé", one: "à la clé", many: "clés" },
+  sword: { label: "Épée", one: "à l'épée", many: "épées" },
+  bear: { label: "Ours", one: "à l'ours", many: "ours", animal: true },
+  harp: { label: "Harpe", one: "à la harpe", many: "harpes" },
+  escallop: { label: "Coquille", one: "à la coquille", many: "coquilles" },
+  tree: { label: "Arbre", one: "à l'arbre", many: "arbres" },
+  tower: { label: "Tour", one: "à la tour", many: "tours" },
 };
-
 const SHOWN_CHARGES: (ChargeType | "none")[] = [
-  "none", "lion", "leopard", "eagle", "eagle2", "fleurdelis", "roundel", "star", "crescent", "crown",
-  "castle", "mascle", "billet", "heart", "dolphin", "alerion", "ship",
+  "none", "lion", "leopard", "eagle", "eagle2", "fleurdelis", "roundel", "star",
+  "crescent", "crown", "castle", "tower", "mascle", "billet", "heart", "dolphin",
+  "alerion", "ship", "rose", "key", "sword", "bear", "harp", "escallop", "tree",
 ];
-
 type Layout = "1" | "2pal" | "2-1" | "3pal" | "3fess" | "semy";
 
 const LAYOUTS: { id: Layout; label: string }[] = [
@@ -200,7 +207,12 @@ function Swatches({ value, onChange, label }: { value: Tincture; onChange: (t: T
             aria-label={TINCTURE_LABELS[t]}
             onClick={() => onChange(t)}
             className={`h-8 w-8 rounded-full border-2 transition ${value === t ? "scale-110 border-wine ring-2 ring-wine/30" : "border-ink/30 hover:scale-105"}`}
-            style={{ background: TINCTURE_COLORS[t as Exclude<Tincture, "hermine">] }}
+            style={{
+              background:
+                t === "hermine" || t === "vair"
+                  ? undefined
+                  : TINCTURE_COLORS[t as Exclude<Tincture, "hermine" | "vair">],
+            }}
           />
         ))}
       </div>

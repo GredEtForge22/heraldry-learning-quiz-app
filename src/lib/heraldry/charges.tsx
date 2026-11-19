@@ -409,28 +409,164 @@ const croixtoulouse: Drawer = ({ c, ox, t2 }) => (
     )}
   </g>
 );
+const rose: Drawer = ({ c, ox, d }) => (
+  <g>
+    {/* pétales */}
+    {[0, 72, 144, 216, 288].map((a) => (
+      <g key={a} transform={`rotate(${a})`}>
+        {solid(c, ox, "M0,-8 C8,-28 22,-28 18,-8 C14,4 4,6 0,2 Z")}
+      </g>
+    ))}
+    <circle r={10} fill={c} stroke={c} strokeWidth={ox} />
+    {ox === 0 && (
+      <g>
+        <circle r={5} fill={d} opacity={0.35} />
+        {[0, 72, 144, 216, 288].map((a) => (
+          <path
+            key={a}
+            d="M0,-6 C3,-14 8,-12 6,-4"
+            fill="none"
+            stroke={d}
+            strokeWidth="1"
+            transform={`rotate(${a})`}
+          />
+        ))}
+      </g>
+    )}
+  </g>
+);
 
+const key: Drawer = ({ c, ox, d }) => (
+  <g>
+    {/* anneau */}
+    <circle cx={0} cy={-28} r={16} fill="none" stroke={c} strokeWidth={10 + ox} />
+    <circle cx={0} cy={-28} r={7} fill="none" stroke={c} strokeWidth={ox || 0} />
+    {/* tige */}
+    {solid(c, ox, "M-5,-12 H5 V42 H-5 Z")}
+    {/* dents */}
+    {solid(c, ox, "M5,28 H22 V36 H5 Z")}
+    {solid(c, ox, "M5,16 H18 V24 H5 Z")}
+    {ox === 0 && fine("M-5,-12 H5 M-5,42 H5", d, 1)}
+  </g>
+);
+
+const sword: Drawer = ({ c, ox, d, t2 }) => (
+  <g>
+    {/* lame */}
+    {solid(c, ox, "M-6,-48 L6,-48 L4,20 L0,48 L-4,20 Z")}
+    {/* garde */}
+    {solid(c, ox, "M-28,18 H28 V28 H-28 Z")}
+    {/* pommeau */}
+    <circle cx={0} cy={-54} r={8} fill={c} stroke={c} strokeWidth={ox} />
+    {ox === 0 && (
+      <g>
+        {fine("M0,-48 V20", d, 1.2)}
+        <rect x={-24} y={20} width={48} height={6} fill={t2} opacity={0.5} />
+      </g>
+    )}
+  </g>
+);
+
+const bear: Drawer = ({ c, ox, d, t2, crowned }) => (
+  <g>
+    {/* corps */}
+    {solid(c, ox, "M-28,-10 C-18,-28 18,-28 28,-8 C34,4 30,28 18,36 C6,42 -6,42 -18,36 C-30,28 -34,4 -28,-10 Z")}
+    {/* tête */}
+    {solid(c, ox, "M-18,-36 C-8,-48 12,-48 20,-34 C24,-24 18,-14 6,-12 C-8,-12 -22,-22 -18,-36 Z")}
+    {/* oreilles */}
+    {solid(c, ox, "M-16,-42 L-22,-54 L-8,-46 Z")}
+    {solid(c, ox, "M14,-42 L20,-54 L8,-46 Z")}
+    {/* pattes */}
+    {limb(c, ox, "M-16,28 L-22,48", 10)}
+    {limb(c, ox, "M16,28 L22,48", 10)}
+    {limb(c, ox, "M-22,-2 L-40,8", 9)}
+    {limb(c, ox, "M22,-2 L40,8", 9)}
+    {crowned && crownShape("#e9b824", ox, d, 0, -56, 0.55)}
+    {ox === 0 && (
+      <g>
+        <circle cx={-6} cy={-32} r={2} fill={d} />
+        <circle cx={8} cy={-32} r={2} fill={d} />
+        <path d="M-2,-24 L4,-24 L1,-20 Z" fill={d} />
+        <path d="M1,-18 C1,-14 1,-12 0,-10" stroke={t2} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      </g>
+    )}
+  </g>
+);
+
+const harp: Drawer = ({ c, ox, d }) => (
+  <g>
+    {/* cadre */}
+    {limb(c, ox, "M-30,40 C-34,-10 -10,-48 20,-44 C36,-42 40,-20 36,10", 7)}
+    {solid(c, ox, "M-34,36 H40 V48 H-34 Z")}
+    {/* colonne */}
+    {solid(c, ox, "M28,-40 H38 V44 H28 Z")}
+    {ox === 0 &&
+      [-20, -8, 4, 16].map((y, i) => (
+        <path
+          key={i}
+          d={`M-22,${y + 20} Q8,${y} 30,${y - 10}`}
+          fill="none"
+          stroke={d}
+          strokeWidth="1.4"
+        />
+      ))}
+  </g>
+);
+
+const escallop: Drawer = ({ c, ox, d }) => (
+  <g>
+    {solid(
+      c,
+      ox,
+      "M0,40 C-40,20 -44,-10 -20,-36 C-8,-46 8,-46 20,-36 C44,-10 40,20 0,40 Z",
+    )}
+    {ox === 0 && (
+      <g>
+        {fine("M0,36 L0,-30 M-16,30 L-8,-28 M16,30 L8,-28 M-28,16 L-18,-18 M28,16 L18,-18", d, 1.3)}
+        {fine("M-30,4 Q0,-8 30,4", d, 1.2)}
+      </g>
+    )}
+  </g>
+);
+
+const tree: Drawer = ({ c, ox, d, t2 }) => (
+  <g>
+    {/* tronc */}
+    {solid(t2 === c ? c : t2, ox, "M-8,10 H8 V48 H-8 Z")}
+    {/* feuillage */}
+    <circle cx={0} cy={-8} r={28} fill={c} stroke={c} strokeWidth={ox} />
+    <circle cx={-18} cy={8} r={16} fill={c} stroke={c} strokeWidth={ox} />
+    <circle cx={18} cy={8} r={16} fill={c} stroke={c} strokeWidth={ox} />
+    <circle cx={0} cy={-28} r={14} fill={c} stroke={c} strokeWidth={ox} />
+    {ox === 0 && fine("M-8,20 H8 M-6,32 H6", d, 1)}
+  </g>
+);
+
+const tower: Drawer = ({ c, ox, t2 }) => (
+  <g>
+    {solid(c, ox, "M-28,-8 H28 V46 H-28 Z")}
+    {solid(c, ox, "M-34,-28 H-14 V-8 H-34 Z")}
+    {solid(c, ox, "M14,-28 H34 V-8 H14 Z")}
+    {solid(c, ox, "M-10,-40 H10 V-8 H-10 Z")}
+    {/* créneaux */}
+    {[-34, -24, -10, 0, 14, 24].map((x) => (
+      <rect key={x} x={x} y={-40} width={8} height={10} fill={c} stroke={c} strokeWidth={ox} />
+    ))}
+    {ox === 0 && (
+      <g fill={t2}>
+        <path d="M-8,46 V28 A8,8 0 0 1 8,28 V46 Z" />
+        <rect x={-6} y={-20} width={12} height={14} rx={3} />
+        <rect x={-28} y={4} width={8} height={12} rx={2} />
+        <rect x={20} y={4} width={8} height={12} rx={2} />
+      </g>
+    )}
+  </g>
+);
 export const CHARGE_DRAWERS: Record<ChargeType, Drawer> = {
-  fleurdelis,
-  lion,
-  leopard,
-  eagle,
-  eagle2,
-  alerion,
-  roundel,
-  star: starC,
-  crescent,
-  crown,
-  mascle,
-  lozenge,
-  billet,
-  castle,
-  ship,
-  dolphin,
-  heart,
-  crosslet,
-  crosspotent,
-  croixtoulouse,
+  fleurdelis, lion, leopard, eagle, eagle2, alerion, roundel,
+  star: starC, crescent, crown, mascle, lozenge, billet, castle,
+  ship, dolphin, heart, crosslet, crosspotent, croixtoulouse,
+  rose, key, sword, bear, harp, escallop, tree, tower,
 };
 
 export const CHARGE_NAMES: Record<ChargeType, string> = {
@@ -454,4 +590,12 @@ export const CHARGE_NAMES: Record<ChargeType, string> = {
   crosslet: "croisette",
   crosspotent: "croix potencée",
   croixtoulouse: "croix cléchée",
+  rose: "rose",
+  key: "clé",
+  sword: "épée",
+  bear: "ours",
+  harp: "harpe",
+  escallop: "coquille",
+  tree: "arbre",
+  tower: "tour",
 };

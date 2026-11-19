@@ -106,7 +106,8 @@ function semyPositions(s: number, gap = 1): [number, number][] {
   return out;
 }
 
-const isLight = (t: Tincture) => t === "or" || t === "argent" || t === "hermine";
+const isLight = (t: Tincture) =>
+  t === "or" || t === "argent" || t === "hermine" || t === "vair";
 
 function defaultSecondary(type: ChargeType, t: Tincture): Tincture {
   switch (type) {
@@ -496,6 +497,19 @@ export function Shield({
               <circle cx="3.4" cy="4.6" r="1.1" />
             </g>
           ))}
+        </pattern>
+        <pattern id={`${uid}-vair`} width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="20" height="20" fill={TINCTURE_COLORS.argent} />
+          {/* cloche d'azur (vair classique) */}
+          <path
+            d="M0,0 H10 V6 Q10,14 5,18 Q0,14 0,6 Z"
+            fill={TINCTURE_COLORS.azur}
+          />
+          <path
+            d="M10,10 H20 V16 Q20,24 15,28 Q10,24 10,16 Z"
+            fill={TINCTURE_COLORS.azur}
+            transform="translate(0 -10)"
+          />
         </pattern>
       </defs>
       <path d={SHIELD_PATH} fill="rgba(0,0,0,.22)" transform="translate(1.6 2.2)" />

@@ -1433,6 +1433,7 @@ export const ARMORIAL: ArmEntry[] = [
         sh(P("or"), undefined, [eagle("sable", 64)]),
       ],
     },
+  },
       // ───────── GROS AJOUT : familles nobles, dynasties, clans
 
   {
@@ -2127,7 +2128,7 @@ export const ARMORIAL: ArmEntry[] = [
     note: "Aigle blanc sur rouge.",
     shield: sh(P("gueules"), undefined, [eagle("argent", 72)]),
   },
-  },
+  
 ];
 
 export const ARMS_BY_ID: Record<string, ArmEntry> = Object.fromEntries(ARMORIAL.map((a) => [a.id, a]));
